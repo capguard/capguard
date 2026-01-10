@@ -35,13 +35,21 @@ This guide explains how to run and present the CapGuard Stealth Attack Demo.
 - 5GB Disk Space (for Llama 3)
 - (Optional) NVIDIA GPU for speed
 
-### 1. Start the Environment
+### 1. Start the Environment & Run Demo
 
-```bash
-cd examples/docker_full
-docker-compose up -d --build
+We have provided a PowerShell script to automate the setup, networking, and execution.
+
+```powershell
+./run_scenario.ps1
 ```
-*Wait for containers to start.*
+
+This script will:
+1. Clean up old containers.
+2. Start Ollama, MailHog, and the Malicious Site.
+3. Wait for services to be ready.
+4. Build and Run the Demo Agent interactively.
+
+### 2. Verify Infrastructure
 
 ### 2. Verify Infrastructure
 
@@ -57,6 +65,10 @@ Check malicious site:
 curl http://localhost:8080/index.html
 # Should see "Grandma's Tomato Soup"
 ```
+
+Check MailHog UI:
+- Open http://localhost:8025 in your browser
+- You should see seeded emails (Password Reset, etc.)
 
 ### 3. Execute the Interaction
 
