@@ -116,6 +116,15 @@ def wait_for_services():
             break
         except:
             time.sleep(1)
+
+    print(f"Waiting for Malicious Site ({MALICIOUS_SITE_URL})...")
+    for _ in range(30):
+        try:
+            requests.head(MALICIOUS_SITE_URL, timeout=1)  # Use HEAD to check connectivity
+            break
+        except Exception as e:
+            # print(f"  (retrying site: {e})") # verbose
+            time.sleep(1)
     
     print("Services ready.")
 

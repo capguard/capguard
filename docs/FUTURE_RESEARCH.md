@@ -408,3 +408,65 @@ response = functiongemma.classify("Email summary to bob@company.com")
 
 **Status:** Research direction - not implemented yet  
 **Next Step:** Collect 1k production examples, run FunctionGemma pilot
+
+---
+
+## Research Direction 4: Multi-Agent Capability Handling
+
+### Concept
+In complex agentic systems, a "Root Agent" (Orchestrator) often spawns "Sub-Agents" (Workers) to handle specific sub-tasks. CapGuard must enforce the **Principle of Least Privilege** across this hierarchy.
+
+### Challenge 1: Capability Inheritance & Transfer
+**Scenario:** Root Agent has `{read_all_files: True}`. It spawns a "Summarizer Agent" to summarize *one* file.
+**Risk:** If Root Agent passes its full token to Sub-Agent, the Sub-Agent is over-privileged.
+**Solution:** **Capability Downscoping (Minting).**
+
+The Root Agent (via CapGuard SDK) requests a *new, narrower* token for the Sub-Agent.
+
+```python
+# Root Agent Logic
+root_token = context.capability_token
+
+# Mint a restricted token for the worker
+worker_token = capguard.mint_sub_token(
+    parent_token=root_token,
+    constraints={
+        "allowed_tools": ["read_file"],
+        "file_path_allowlist": ["/data/report.txt"]  # Constraint propagation
+    }
+)
+
+# Initialize Sub-Agent with restricted token
+worker = SubAgent(token=worker_token)
+worker.run()
+```
+
+### Challenge 2: Parallel Sub-Agent Execution & Privilege Escalation
+**Scenario:** Root Agent spawns two parallel workers:
+1. `EmailSearcher` (Can read emails)
+2. `PublicWebReader` (Can read public web)
+
+**Risk:** If `PublicWebReader` is compromised via prompt injection, it might try to define *new* tools or access shared memory to use `EmailSearcher`'s tools.
+
+**CapGuard Enforcement:**
+- **Strict Isolation:** Each parallel execution thread/process is bound to a specific `CapabilityToken`.
+- **No Dynamic Capability Granting:** If `PublicWebReader` asks the Orchestrator for "more tools", CapGuard must re-classify the request at the Orchestrator level with the *original* user intent as context.
+
+### Architecture Proposal
+
+```mermaid
+graph TD
+    User[User Request] --> Orchestrator
+    Orchestrator -->|Classify| CapGuard
+    CapGuard -->|Token A (Full)| Orchestrator
+    
+    Orchestrator -->|Mint Token B (Web Only)| SubAgent1[Web Reader]
+    Orchestrator -->|Mint Token C (Email Only)| SubAgent2[Email Searcher]
+    
+    SubAgent1 --x|Blocked: Search Email| MailServer
+    SubAgent1 -->|Allowed: Read Web| Internet
+    
+    SubAgent2 -->|Allowed: Search Email| MailServer
+```
+
+**Key Research Item:** Designing the cryptographic or logical `mint_sub_token` protocol to ensure tokens cannot be forged or escalated by sub-agents.

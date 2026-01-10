@@ -15,11 +15,11 @@ Write-Host "==========================================" -ForegroundColor Cyan
 # 1. Cleanup
 Write-Host "`n[-] Cleaning up previous containers..." -ForegroundColor Yellow
 docker-compose -f $COMPOSE_FILE down --remove-orphans
-docker rm -f capguard-demo-runner capguard-ollama capguard-recipe-site capguard-mailhog 2>$null
+# docker rm -f capguard-demo-runner capguard-ollama capguard-recipe-site capguard-mailhog 2>$null
 
 # 2. Start Infrastructure (Ollama, Recipe Site, MailHog)
 Write-Host "[-] Starting infrastructure..." -ForegroundColor Cyan
-docker-compose -f $COMPOSE_FILE up -d --build capguard-ollama capguard-recipe-site capguard-mailhog ollama recipe-site mailhog
+docker-compose -f $COMPOSE_FILE up -d --build ollama recipe-site mailhog
 # Note: Using service names from compose
 
 # 3. Wait for Ollama
@@ -63,13 +63,11 @@ Write-Host "`n[READY] Infrastructure is live." -ForegroundColor Green
 Write-Host "  - Malicious Site: http://localhost:8080/index.html"
 Write-Host "  - MailHog UI:     http://localhost:8025"
 Write-Host "`n[ACTION] Open these URLs in your browser to observe."
-Read-Host "Press ENTER to RUN THE DEMO (Vulnerable vs Protected)..."
+# Read-Host "Press ENTER to RUN THE DEMO (Vulnerable vs Protected)..."
 
 # 7. Run Demo
 Write-Host "[-] Running Demo..." -ForegroundColor Cyan
-# IMPORTANT: Use 'up' not 'run' to ensure network binding is perfect, 
-# or 'run' with explicit network if needing interaction.
-# Let's use 'run' attached to the network we defined.
-docker-compose -f $COMPOSE_FILE run --rm --service-ports demo-runner
+# IMPORANT: using 'up' guarantees correct network attachment as defined in yaml
+docker-compose -f $COMPOSE_FILE up --force-recreate demo-runner
 
 Write-Host "`n[+] Demo Complete." -ForegroundColor Green
