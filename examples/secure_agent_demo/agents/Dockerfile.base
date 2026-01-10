@@ -13,7 +13,7 @@ COPY src/ /app/src/
 
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir .
-RUN pip install --no-cache-dir langchain langchain-openai requests
+RUN pip install --no-cache-dir langchain langchain-openai langchain-ollama requests beautifulsoup4
 
 # Default Env Vars
 ENV PYTHONUNBUFFERED=1

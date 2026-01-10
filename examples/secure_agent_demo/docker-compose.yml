@@ -1,4 +1,4 @@
-version: '3.8'
+
 
 services:
   # -------------------------
@@ -14,11 +14,11 @@ services:
     volumes:
       - ollama-data:/root/.ollama
 
-  # 2. Malicious Website
-  malicious-site:
+  # 2. Article Archive (contains hidden injection payload)
+  archive-server:
     build: 
       context: ./infrastructure/site
-    container_name: demo-site
+    container_name: demo-archive
     ports:
       - "8080:8080"
       
