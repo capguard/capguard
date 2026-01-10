@@ -1,7 +1,7 @@
 """Capability enforcer - enforces capability tokens at runtime."""
 
 from typing import Any, Dict, List
-from .models import CapabilityToken, AuditLogEntry
+from ..models import CapabilityToken, AuditLogEntry
 from .registry import ToolRegistry
 from .exceptions import PermissionDeniedError, ConstraintViolationError, ToolNotFoundError
 

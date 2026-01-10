@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 from typing import Optional
-from .models import CapabilityToken
+from ..models import CapabilityToken
 from .registry import ToolRegistry
 
 

@@ -2,7 +2,7 @@
 
 from typing import Dict, List
 from ..core.classifier import IntentClassifier
-from ..core.models import CapabilityToken
+from ..models import CapabilityToken
 from ..core.registry import ToolRegistry
 
 

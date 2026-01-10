@@ -1,7 +1,7 @@
 """Tool registry for managing available agent tools."""
 
 from typing import Callable, Optional, Dict
-from .models import ToolDefinition, ToolParameter
+from ..models import ToolDefinition, ToolParameter
 from .exceptions import ToolNotFoundError, ToolAlreadyRegisteredError
 
 

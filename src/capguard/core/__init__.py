@@ -1,6 +1,6 @@
 """CapGuard core module - foundational security primitives."""
 
-from .models import CapabilityToken, ToolDefinition, ToolParameter, AuditLogEntry
+from ..models import CapabilityToken, ToolDefinition, ToolParameter, AuditLogEntry
 from .registry import ToolRegistry, create_tool_definition
 from .classifier import IntentClassifier
 from .enforcer import CapabilityEnforcer
