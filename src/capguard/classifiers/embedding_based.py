@@ -1,8 +1,13 @@
 """Embedding-based classifier using sentence similarity."""
 
 from typing import Dict
-import numpy as np
-from sentence_transformers import SentenceTransformer, util
+try:
+    import numpy as np
+    from sentence_transformers import SentenceTransformer, util
+except ImportError:
+    np = None
+    SentenceTransformer = None
+    util = None
 
 from ..models import CapabilityToken
 from ..core.classifier import IntentClassifier
