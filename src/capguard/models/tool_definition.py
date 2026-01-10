@@ -39,8 +39,8 @@ class ToolDefinition(BaseModel):
         description="Should user confirm before execution?"
     )
     
-    class Config:
-        json_schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "name": "send_email",
                 "description": "Send an email message",
@@ -53,3 +53,4 @@ class ToolDefinition(BaseModel):
                 "requires_confirmation": True
             }
         }
+    }
