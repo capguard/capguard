@@ -1,32 +1,51 @@
-# CapGuard Tests
+# CapGuard Test Suite
 
-Unit and integration tests for CapGuard.
+This directory contains the entire test suite for CapGuard.
 
-## Running Tests
+## 1. Quick Start
 
+Run standard unit tests (no extra dependencies):
 ```bash
-# All tests (skip LLM integration by default)
-pytest -v
-
-# Include LLM integration tests
-RUN_OLLAMA_TESTS=true pytest -v
-
-# With specific provider
-GROQ_API_KEY=your-key pytest tests/test_llm_classifier.py -v
+pytest tests/test_core.py tests/test_decorators.py
 ```
 
-## Test Files
+## 2. Test Structure
 
-| File | Description |
-|------|-------------|
-| `test_core.py` | ToolRegistry, CapabilityEnforcer |
-| `test_classifiers.py` | RuleBasedClassifier |
-| `test_llm_classifier.py` | LLMClassifier (multi-provider) |
-| `conftest.py` | Shared fixtures, provider config |
+| File | Purpose | Deps |
+|------|---------|------|
+| `test_core.py` | Core logic (Registry, Enforcer) | standard |
+| `test_decorators.py` | Decorator pattern logic | standard |
+| `test_langchain.py` | LangChain integration | `langchain` |
+| `test_llm_classifier.py` | Real LLM classification | `openai`/`groq` |
 
-## Provider Support
+## 3. Running Integration Tests
 
-Tests can run against multiple LLM providers:
-- **Ollama**: Set `RUN_OLLAMA_TESTS=true`
-- **Groq**: Set `GROQ_API_KEY=xxx`
-- **OpenAI**: Set `OPENAI_API_KEY=xxx`
+### LangChain Tests
+Requires `langchain` package installed:
+```bash
+pip install langchain langchain-openai langchain-community
+pytest tests/test_langchain.py
+```
+
+### LLM Classifier Tests
+Requires API keys or local Ollama:
+
+**With Groq (Fastest):**
+```bash
+export GROQ_API_KEY=your_key
+pytest tests/test_llm_classifier.py
+```
+
+**With Ollama (Local):**
+```bash
+export RUN_OLLAMA_TESTS=true
+pytest tests/test_llm_classifier.py
+```
+
+## 4. Run Everything in Docker (Recommended)
+You can run the full suite using the base agent image:
+
+```bash
+docker build -t capguard-test -f tests/Dockerfile .
+docker run --env-file .env capguard-test
+```

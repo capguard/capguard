@@ -26,7 +26,7 @@ def test_decorator_registration():
     assert defn.risk_level == 3
     
     # Check execution
-    implementation = registry.get_implementation("my_tool")
+    implementation = registry.get_tool("my_tool")
     assert implementation(5) == 10
 
 def test_decorator_parameter_extraction():
@@ -57,8 +57,11 @@ def test_decorator_parameter_extraction():
 def test_decorator_stacking():
     """Test that it works with other decorators (like @tool)."""
     
+    import functools
+    
     # Simulate a decorator that wraps the function
     def other_decorator(func):
+        @functools.wraps(func)
         def wrapper(*args, **kwargs):
             return func(*args, **kwargs)
         return wrapper
