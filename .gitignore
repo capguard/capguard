@@ -25,6 +25,13 @@ venv/
 env/
 ENV/
 
+# Environment variables (contains API keys)
+.env
+
+# Log files
+*.log
+*_output.txt
+
 # IDE
 .vscode/
 .idea/

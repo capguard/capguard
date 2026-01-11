@@ -1,0 +1,34 @@
+
+
+services:
+  # -------------------------
+  # INFRASTRUCTURE
+  # -------------------------
+  
+  # 1. LLM Provider (Ollama)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: demo-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+
+  # 2. Article Archive (contains hidden injection payload)
+  archive-server:
+    build: 
+      context: ./infrastructure/site
+    container_name: demo-archive
+    ports:
+      - "8080:8080"
+      
+  # 3. MailHog (Email Server & UI)
+  mailhog:
+    image: mailhog/mailhog
+    container_name: demo-mailhog
+    ports:
+      - "8025:8025" # UI
+      - "1025:1025" # SMTP
+
+volumes:
+  ollama-data:

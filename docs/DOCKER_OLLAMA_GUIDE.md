@@ -117,6 +117,40 @@ docker-compose logs -f
 
 ---
 
+## ⚡ enabling GPU Support (Optional but Recommended)
+
+For faster performance, you can use your NVIDIA GPU.
+
+### 1. Prerequisites
+- NVIDIA GPU (GTX 1650 or better)
+- Latest NVIDIA Drivers
+- [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) installed on host.
+
+### 2. Configure docker-compose.yml
+Uncomment the `deploy` section in `examples/docker_full/docker-compose.yml`:
+
+```yaml
+services:
+  ollama:
+    # ... other settings ...
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+```
+
+### 3. Verification
+Check if Ollama is using GPU logs:
+```bash
+docker-compose logs ollama | grep "NVIDIA"
+```
+You should see "detected 1 CUDA device".
+
+---
+
 ## Model Recommendations
 
 ### For Classification (Fast & Accurate)

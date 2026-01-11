@@ -36,8 +36,8 @@ class CapabilityToken(BaseModel):
         description="Which classifier was used (rule-based, ml, llm)"
     )
     
-    class Config:
-        json_schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "request_id": "abc-123",
                 "user_request": "Summarize http://example.com",
@@ -51,3 +51,4 @@ class CapabilityToken(BaseModel):
                 "classification_method": "rule-based"
             }
         }
+    }

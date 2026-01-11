@@ -46,6 +46,7 @@ class LLMClassifier(IntentClassifier):
         api_key: str = "required",
         temperature: float = 0.0,
         max_tokens: int = 500,
+        debug: bool = False,
     ):
         """
         Initialize LLM classifier.
@@ -57,12 +58,26 @@ class LLMClassifier(IntentClassifier):
             api_key: API key (or "ollama" for local Ollama)
             temperature: LLM temperature (0.0 = deterministic)
             max_tokens: Max tokens in response
+            debug: If True, log prompts and responses (default: False)
         """
         super().__init__(tool_registry)
         
         self.model = model
         self.temperature = temperature
         self.max_tokens = max_tokens
+        self.debug = debug
+        
+        # Setup debug logging
+        if self.debug:
+            import logging
+            self.logger = logging.getLogger(f"capguard.classifier.{model}")
+            if not self.logger.handlers:
+                handler = logging.StreamHandler()
+                handler.setFormatter(logging.Formatter('[%(name)s] %(message)s'))
+                self.logger.addHandler(handler)
+                self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger = None
         
         # Create OpenAI client (works with Ollama too!)
         self.client = OpenAI(
@@ -88,6 +103,15 @@ class LLMClassifier(IntentClassifier):
             user_request=user_request
         )
         
+        if self.debug and self.logger:
+            self.logger.debug("=" * 60)
+            self.logger.debug("SYSTEM PROMPT:")
+            self.logger.debug(CLASSIFICATION_SYSTEM_PROMPT)
+            self.logger.debug("-" * 60)
+            self.logger.debug("USER PROMPT:")
+            self.logger.debug(user_prompt)
+            self.logger.debug("=" * 60)
+        
         # 3. Call LLM
         try:
             response = self.client.chat.completions.create(
@@ -103,10 +127,23 @@ class LLMClassifier(IntentClassifier):
             
             # 4. Parse response
             content = response.choices[0].message.content
+            
+            if self.debug and self.logger:
+                self.logger.debug("LLM RAW RESPONSE:")
+                self.logger.debug(content)
+                self.logger.debug("=" * 60)
+            
             result = json.loads(content)
             
             granted_tools = result.get("granted_tools", {})
             confidence = result.get("confidence", 0.5)
+            reasoning = result.get("reasoning", "No reasoning provided")
+            
+            if self.debug and self.logger:
+                self.logger.debug(f"Parsed Token:")
+                self.logger.debug(f"  Granted: {granted_tools}")
+                self.logger.debug(f"  Confidence: {confidence}")
+                self.logger.debug(f"  Reasoning: {reasoning}")
             
             # 5. Ensure all tools are represented (default to False)
             for tool_name in self.get_available_tools():

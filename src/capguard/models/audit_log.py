@@ -30,8 +30,8 @@ class AuditLogEntry(BaseModel):
         description="Flag for security team review"
     )
     
-    class Config:
-        json_schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "request_id": "abc-123",
                 "tool_name": "send_email",
@@ -41,3 +41,4 @@ class AuditLogEntry(BaseModel):
                 "potential_attack": True
             }
         }
+    }
