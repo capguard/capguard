@@ -18,14 +18,13 @@ class MockClassifier:
 
 # --- Tests ---
 
-@pytest.mark.skip(reason="Review mocks - TypeError in Docker")
 def test_protected_executor_allow():
     """Test that allowed tools execute normally."""
     
     # Setup
     registry = ToolRegistry()
     registry.register(
-        ToolDefinition("read_file", risk_level=1),
+        ToolDefinition(name="read_file", description="Read a file", risk_level=1),
         lambda path: f"Reading {path}"
     )
     
@@ -67,7 +66,6 @@ def test_protected_executor_allow():
     # Verify tools were temporarily swapped
     # (Hard to verify state during call without side effects, but we assume it worked if result matches)
 
-@pytest.mark.skip(reason="Review mocks - TypeError in Docker")
 def test_protected_executor_deny_termination():
     """
     Test that denied tools raise SecurityStop and return blocked result.
@@ -78,7 +76,7 @@ def test_protected_executor_deny_termination():
     # Setup registry with high risk tool
     registry = ToolRegistry()
     registry.register(
-        ToolDefinition("delete_file", risk_level=5),
+        ToolDefinition(name="delete_file", description="Delete a file", risk_level=5),
         lambda path: "deleted"
     )
     

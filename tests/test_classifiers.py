@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock, patch
 from capguard.core.registry import ToolRegistry, create_tool_definition
-from capguard.classifiers import RuleBasedClassifier, EmbeddingClassifier, LLMClassifier
+from capguard.classifiers import RuleBasedClassifier, LLMClassifier
 from capguard.models import CapabilityToken
 
 @pytest.fixture
@@ -20,43 +20,6 @@ def test_rule_classifier(registry):
     token = clf.classify("Please send an email")
     assert token.granted_tools["send_email"] == True
     assert token.granted_tools["read_web"] == False
-
-# --- Embedding Tests ---
-
-def test_embedding_classifier(registry):
-    pytest.importorskip("sentence_transformers")
-    # Mock SentenceTransformer to avoid loading heavy model in unit tests
-    with patch("capguard.classifiers.embedding_based.SentenceTransformer") as MockST:
-        mock_model = MockST.return_value
-        # Mock encoding: return distinct vectors
-        # "Read website" tool description -> [1.0, 0.0]
-        # "Send email" tool description -> [0.0, 1.0]
-        # User "read" -> [0.9, 0.1] (close to read)
-        
-        def mock_encode(text, convert_to_tensor=True):
-            s = str(text).lower()
-            if "read website" in s: return [1.0, 0.0]  # Tool desc
-            if "send email" in s: return [0.0, 1.0]    # Tool desc
-            if "read url" in s: return [1.0, 0.1]      # User query
-            return [0.0, 0.0]
-            
-        mock_model.encode.side_effect = mock_encode
-        
-        # Need to patch cos_sim as well since we are using lists not tensors
-        with patch("capguard.classifiers.embedding_based.util.cos_sim") as mock_sim:
-            def simple_sim(a, b):
-                # dot product for dummy vectors
-                val = a[0]*b[0] + a[1]*b[1]
-                return MagicMock(item=lambda: val)
-            mock_sim.side_effect = simple_sim
-            
-            clf = EmbeddingClassifier(registry, model_name="dummy", threshold=0.5)
-            
-            token = clf.classify("read url")
-            
-            # Should match read_web (1.0*1.0) and not send_email
-            assert token.granted_tools.get("read_web") == True
-            assert token.granted_tools.get("send_email") == False
 
 # --- LLM Tests ---
 

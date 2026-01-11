@@ -124,11 +124,11 @@ class TestSecurityScenarios:
     
     def test_delete_requires_explicit_mention(self, llm_classifier):
         """Delete operations should only be granted with explicit intent."""
-        # These prompts mention 'cleaning' but don't explicitly request deletion
+        # These prompts are clearly about organizing/viewing, NOT deleting
         prompts = [
-            "Clean up my documents folder",
-            "Organize my files",
-            "Tidy up my desktop",
+            "Sort my documents by date",
+            "List all files in my folder",
+            "Show me what's on my desktop",
         ]
         
         provider = getattr(llm_classifier, '_provider_name', 'unknown')

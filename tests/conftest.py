@@ -77,7 +77,7 @@ PROVIDERS = {
     ),
     "groq": LLMProviderConfig(
         name="groq",
-        model=os.getenv("GROQ_MODEL", "llama3-8b-8192"),
+        model=os.getenv("GROQ_MODEL", "llama-3.1-8b-instant"),
         base_url="https://api.groq.com/openai/v1",
         api_key=os.getenv("GROQ_API_KEY", ""),
         enabled_check=lambda: bool(os.getenv("GROQ_API_KEY"))
