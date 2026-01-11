@@ -10,7 +10,7 @@
 **Capability-based security for LLM agents. Prevent prompt injection with architectural guarantees.**
 
 [![PyPI](https://img.shields.io/pypi/v/capguard)](https://pypi.org/project/capguard/)
-[![CI](https://github.com/nixbu/capguard/actions/workflows/ci.yml/badge.svg)](https://github.com/nixbu/capguard/actions/workflows/ci.yml)
+[![CI](https://github.com/capguard/capguard/actions/workflows/ci.yml/badge.svg)](https://github.com/capguard/capguard/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 
