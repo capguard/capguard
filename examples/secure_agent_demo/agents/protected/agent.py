@@ -82,29 +82,33 @@ def send_email_func(input_str: str) -> str:
 
 # --- 2. Setup CapGuard ---
 registry = ToolRegistry()
-registry.register(ToolDefinition(
-    name="read_website", 
-    description="Read content from a URL",
-    parameters=[ToolParameter(name="url", type="string", description="The URL to read")],
-    risk_level=2  # Low risk - read-only operation
-))
-# Note: send_email in lab takes ONE string 'recipient|subject|body'.
-registry.register(ToolDefinition(
-    name="send_email", 
-    description="Send an email. Input format: 'recipient|subject|body'",
-    parameters=[
-        ToolParameter(name="input_str", type="string", description="Pipe separated email details")
-    ],
-    risk_level=4  # High risk - can exfiltrate data
-))
+registry.register(
+    ToolDefinition(
+        name="read_website", 
+        description="Read content from a URL",
+        parameters=[ToolParameter(name="url", type="string", description="The URL to read")],
+        risk_level=2  # Low risk - read-only operation
+    ),
+    read_website_func  # The actual function implementation
+)
+registry.register(
+    ToolDefinition(
+        name="send_email", 
+        description="Send an email. Input format: 'recipient|subject|body'",
+        parameters=[
+            ToolParameter(name="input_str", type="string", description="Pipe separated email details")
+        ],
+        risk_level=4  # High risk - can exfiltrate data
+    ),
+    send_email_func  # The actual function implementation
+)
 
 print(f"[CapGuard] Initializing LLMClassifier with {OLLAMA_BASE_URL}...")
 classifier = LLMClassifier(
-    registry=registry, 
-    model_provider="ollama", 
-    model_name="llama3",
-    ollama_url=OLLAMA_BASE_URL # LangChain-Ollama style might need different URL?
-    # base_url logic for direct requests in LLMClassifier usually wants http://host:port
+    tool_registry=registry,
+    model="llama3",
+    base_url=f"{OLLAMA_BASE_URL}/v1",  # Ollama OpenAI-compatible endpoint
+    api_key="ollama"
 )
 
 enforcer = CapabilityEnforcer(registry)
