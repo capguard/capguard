@@ -188,7 +188,7 @@ class ProtectedAgentExecutor:
                 return f"Error executing {tool_name}: {e}"
         
         # Create new Tool
-        return Tool(
+        return Tool.from_function(
             name=langchain_tool.name,
             func=guarded_func,
             description=langchain_tool.description

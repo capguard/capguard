@@ -24,6 +24,7 @@ def test_rule_classifier(registry):
 # --- Embedding Tests ---
 
 def test_embedding_classifier(registry):
+    pytest.importorskip("sentence_transformers")
     # Mock SentenceTransformer to avoid loading heavy model in unit tests
     with patch("capguard.classifiers.embedding_based.SentenceTransformer") as MockST:
         mock_model = MockST.return_value
