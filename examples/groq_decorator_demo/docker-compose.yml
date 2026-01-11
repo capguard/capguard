@@ -1,0 +1,23 @@
+services:
+  # Archive Server (contains injection payload)
+  archive-server:
+    build: ./infrastructure/site
+    container_name: demo-archive
+    ports:
+      - "8080:8080"
+    networks:
+      - capguard-net
+      
+  # MailHog (Email capture)
+  mailhog:
+    image: mailhog/mailhog
+    container_name: demo-mailhog
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    networks:
+      - capguard-net
+
+networks:
+  capguard-net:
+    name: capguard-decorator-net

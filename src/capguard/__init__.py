@@ -35,6 +35,12 @@ from .classifiers import (
     create_default_rules,
 )
 
+from .decorators import (
+    capguard_tool,
+    get_global_registry,
+    reset_global_registry,
+)
+
 __all__ = [
     # Version
     '__version__',
@@ -54,6 +60,11 @@ __all__ = [
     # Classifiers
     'RuleBasedClassifier',
     'create_default_rules',
+    
+    # Decorators
+    'capguard_tool',
+    'get_global_registry',
+    'reset_global_registry',
     
     # Exceptions
     'CapGuardError',
