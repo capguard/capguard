@@ -14,7 +14,6 @@ Usage:
 
 import inspect
 from typing import Callable, Optional
-from functools import wraps
 
 from .core import ToolRegistry, ToolDefinition, ToolParameter
 
@@ -72,13 +71,13 @@ def capguard_tool(
             param_type = "string"  # Default
             if param.annotation != inspect.Parameter.empty:
                 annotation = param.annotation
-                if annotation == int:
+                if annotation is int:
                     param_type = "integer"
-                elif annotation == float:
+                elif annotation is float:
                     param_type = "number"
-                elif annotation == bool:
+                elif annotation is bool:
                     param_type = "boolean"
-                elif annotation == str:
+                elif annotation is str:
                     param_type = "string"
                 else:
                     param_type = str(annotation)
