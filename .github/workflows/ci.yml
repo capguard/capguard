@@ -31,7 +31,7 @@ jobs:
           pytest tests/test_core.py tests/test_decorators.py tests/test_classifiers.py -v
       
       - name: Run LLM integration tests
-        if: ${{ secrets.GROQ_API_KEY != '' }}
+        if: env.GROQ_API_KEY != ''
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
