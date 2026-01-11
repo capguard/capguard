@@ -104,11 +104,16 @@ registry.register(
 )
 
 print(f"[CapGuard] Initializing LLMClassifier with {OLLAMA_BASE_URL}...")
+DEBUG_MODE = os.getenv("CAPGUARD_DEBUG", "false").lower() == "true"
+if DEBUG_MODE:
+    print("[CapGuard] Debug mode ENABLED - will log prompts and responses")
+
 classifier = LLMClassifier(
     tool_registry=registry,
     model="llama3",
     base_url=f"{OLLAMA_BASE_URL}/v1",  # Ollama OpenAI-compatible endpoint
-    api_key="ollama"
+    api_key="ollama",
+    debug=DEBUG_MODE
 )
 
 enforcer = CapabilityEnforcer(registry)
