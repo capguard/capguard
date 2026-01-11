@@ -5,11 +5,8 @@ Provides ProtectedAgentExecutor - a drop-in wrapper for LangChain's AgentExecuto
 that adds CapGuard protection with minimal code changes.
 """
 
-from typing import Any, Dict, Optional, TYPE_CHECKING
+from typing import Any, Dict, Optional
 
-if TYPE_CHECKING:
-    from langchain.agents import AgentExecutor
-    from langchain.tools import Tool
 
 from ..core import ToolRegistry, CapabilityEnforcer, PermissionDeniedError
 from ..core.classifier import IntentClassifier
@@ -131,9 +128,9 @@ class ProtectedAgentExecutor:
             
         except self.SecurityStop as e:
             # Step 5: Handle security termination
-            print(f"\n[CapGuard] 🛑 SECURITY VIOLATION DETECTED 🛑")
+            print("\n[CapGuard] 🛑 SECURITY VIOLATION DETECTED 🛑")
             print(f"[CapGuard] Incident: {e}")
-            print(f"[CapGuard] Action: Terminating agent execution immediately.")
+            print("[CapGuard] Action: Terminating agent execution immediately.")
             return {
                 "output": f"Security Violation: {e}. Execution terminated by CapGuard.",
                 "capguard_blocked": True
@@ -152,7 +149,6 @@ class ProtectedAgentExecutor:
         # Lazy import
         from langchain.tools import Tool
         
-        original_func = langchain_tool.func
         tool_name = langchain_tool.name
         
         def guarded_func(*args, **kwargs):
@@ -171,14 +167,14 @@ class ProtectedAgentExecutor:
                 # Execute through enforcer (checks token)
                 return self.enforcer.execute_tool(tool_name, token, **kwargs)
                 
-            except PermissionDeniedError as e:
+            except PermissionDeniedError:
                 # Attack blocked! Raise SecurityStop to kill the agent loop
                 msg = f"Unauthorized access to tool '{tool_name}' blocked."
                 if self.verbose:
                     definition = self.registry.get_definition(tool_name)
                     risk_level = definition.risk_level if definition else "Unknown"
                     print(f"\n[CapGuard] ⛔ BLOCKED: {tool_name} (Risk Level: {risk_level})")
-                    print(f"[CapGuard] Reason: Tool not granted in capabilities token.")
+                    print("[CapGuard] Reason: Tool not granted in capabilities token.")
                 
                 # We raise BaseException to bypass LangChain's try/except Exception blocks
                 raise self.SecurityStop(msg)
