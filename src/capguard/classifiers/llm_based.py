@@ -1,7 +1,7 @@
 """LLM-based classifier using OpenAI-compatible APIs."""
 
 import json
-from typing import Optional, Dict, Any
+from typing import Optional
 from openai import OpenAI
 
 from ..models import CapabilityToken
@@ -140,7 +140,7 @@ class LLMClassifier(IntentClassifier):
             reasoning = result.get("reasoning", "No reasoning provided")
             
             if self.debug and self.logger:
-                self.logger.debug(f"Parsed Token:")
+                self.logger.debug("Parsed Token:")
                 self.logger.debug(f"  Granted: {granted_tools}")
                 self.logger.debug(f"  Confidence: {confidence}")
                 self.logger.debug(f"  Reasoning: {reasoning}")
