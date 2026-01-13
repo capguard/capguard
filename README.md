@@ -1,10 +1,12 @@
 ```
- ██████╗ █████╗ ██████╗  ██████╗ ██╗   ██╗ █████╗ ██████╗ ██████╗ 
-██╔════╝██╔══██╗██╔══██╗██╔════╝ ██║   ██║██╔══██╗██╔══██╗██╔══██╗
-██║     ███████║██████╔╝██║  ███╗██║   ██║███████║██████╔╝██║  ██║
-██║     ██╔══██║██╔═══╝ ██║   ██║██║   ██║██╔══██║██╔══██╗██║  ██║
-╚██████╗██║  ██║██║     ╚██████╔╝╚██████╔╝██║  ██║██║  ██║██████╔╝
- ╚═════╝╚═╝  ╚═╝╚═╝      ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ 
+ _____             _____                     _ 
+/  __ \           |  __ \                   | |
+| /  \/ __ _ _ __ | |  \/_   _  __ _ _ __ __| |
+| |    / _` | '_ \| | __| | | |/ _` | '__/ _` |
+| \__/\ (_| | |_) | |_\ \ |_| | (_| | | | (_| |
+ \____/\__,_| .__/ \____/\__,_|\__,_|_|  \__,_|
+            | |                                
+            |_|                                        
 ```
 
 **Capability-based security for LLM agents. Prevent prompt injection with architectural guarantees.**
@@ -33,6 +35,25 @@ Agent (compromised): *sends sensitive data*
 - ❌ Guard models: 50-80% effective, can be bypassed
 - ❌ Prompt engineering: Brittle, model-dependent
 - ❌ Input sanitization: Can't detect all attacks
+
+---
+
+## Installation
+
+**Standard install (lightweight):**
+```bash
+pip install capguard
+```
+
+**With LLM support (OpenAI/Ollama):**
+```bash
+pip install "capguard[llm]"
+```
+
+**With LangChain support:**
+```bash
+pip install "capguard[langchain]"
+```
 
 ---
 

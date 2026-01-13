@@ -2,7 +2,6 @@
 
 import json
 from typing import Optional
-from openai import OpenAI
 
 from ..models import CapabilityToken
 from ..core.classifier import IntentClassifier
@@ -79,6 +78,16 @@ class LLMClassifier(IntentClassifier):
         else:
             self.logger = None
         
+        
+        # Import OpenAI lazily (optional dependency)
+        try:
+            from openai import OpenAI
+        except ImportError:
+            raise ImportError(
+                "LLMClassifier requires 'openai' package. "
+                "Install with: pip install 'capguard[llm]'"
+            )
+
         # Create OpenAI client (works with Ollama too!)
         self.client = OpenAI(
             base_url=base_url,
