@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "capguard"
-version = "0.1.2"
+version = "0.1.3"
 description = "Capability-based security for LLM agents"
 readme = "README.md"
 license = {text = "Apache-2.0"}
@@ -28,6 +28,10 @@ keywords = ["llm", "security", "ai", "prompt-injection", "agents", "capability"]
 
 dependencies = [
     "pydantic>=2.0.0",
+    "openai>=1.0.0",
+    "langchain>=0.1.0",
+    "langchain-openai>=0.0.5",
+    "langchain-community>=0.0.20",
 ]
 
 [project.optional-dependencies]
