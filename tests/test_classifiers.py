@@ -24,8 +24,8 @@ def test_rule_classifier(registry):
 # --- LLM Tests ---
 
 def test_llm_classifier_mock(registry):
-    # Mock OpenAI client
-    with patch("capguard.classifiers.llm_based.OpenAI") as MockOpenAI:
+    # Mock OpenAI client (now using openai.OpenAI since it's lazy-loaded)
+    with patch("openai.OpenAI") as MockOpenAI:
         mock_client = MockOpenAI.return_value
         
         # Mock successful response
@@ -41,7 +41,7 @@ def test_llm_classifier_mock(registry):
         assert token.confidence == 0.9
 
 def test_llm_classifier_error_fallback(registry):
-    with patch("capguard.classifiers.llm_based.OpenAI") as MockOpenAI:
+    with patch("openai.OpenAI") as MockOpenAI:
         mock_client = MockOpenAI.return_value
         mock_client.chat.completions.create.side_effect = Exception("API Error")
         
