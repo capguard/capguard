@@ -27,6 +27,7 @@ ENV/
 
 # Environment variables (contains API keys)
 .env
+/secrets/
 
 # Log files
 *.log
