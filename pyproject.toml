@@ -9,7 +9,7 @@ description = "Capability-based security for LLM agents"
 readme = "README.md"
 license = {text = "Apache-2.0"}
 authors = [
-    {name = "Your Name", email = "founders@capguard.com"}
+    {name = "CapGuard Team", email = "83171543+Nixbu@users.noreply.github.com"}
 ]
 requires-python = ">=3.9"
 classifiers = [
