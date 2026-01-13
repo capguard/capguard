@@ -4,7 +4,7 @@ CapGuard: Capability-based security for LLM agents.
 Prevents prompt injection attacks with architectural guarantees.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.2"
 
 from .core import (
     # Models
@@ -32,6 +32,7 @@ from .core import (
 
 from .classifiers import (
     RuleBasedClassifier,
+    LLMClassifier,
     create_default_rules,
 )
 
@@ -59,6 +60,7 @@ __all__ = [
     
     # Classifiers
     'RuleBasedClassifier',
+    'LLMClassifier',
     'create_default_rules',
     
     # Decorators
