@@ -336,20 +336,6 @@ class MyClassifier(IntentClassifier):
 
 ---
 
-## Research
-
-This approach is described in our arXiv paper:
-
-**"Capability-Based Access Control for Large Language Model Agents"**  
-[Link to be added]
-
-Key findings:
-- 95%+ attack prevention rate
-- <50ms classification latency
-- Zero false positives with proper tuning
-
----
-
 ## FAQ
 
 **Q: Doesn't this slow down my agent?**  
