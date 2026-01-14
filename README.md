@@ -238,7 +238,7 @@ verify at http://localhost:8025 (MailHog UI).
 |----------|---------------|----------------|----------|
 | **Guard Models** | 60-80% (bypassable) | ❌ No | ⚠️ Subjective |
 | **Prompt Engineering** | 50-70% (brittle) | ❌ No | ❌ Hard |
-| **CapGuard** | **95-99%** | ✅ Yes | ✅ Binary (blocked=success) |
+| **CapGuard** | **Architectural** | ✅ Yes | ✅ Binary (blocked=success) |
 
 ### Key Advantages
 
@@ -247,6 +247,10 @@ verify at http://localhost:8025 (MailHog UI).
 3. **Batteries Included**: Optional integration for LangChain and OpenAI
 4. **Production-Ready**: Full audit logging, constraint validation
 5. **Developer-Friendly**: 5 lines of code to get started
+
+### Related Research
+
+CapGuard implements capability-based security for LLM agents, a concept recently explored in academic research. Google Research published [CaMeL (Defeating Prompt Injections by Design)](https://arxiv.org/abs/2503.18813), demonstrating the theoretical effectiveness of this approach. CapGuard provides a production-ready implementation designed for integration into existing projects.
 
 ---
 
@@ -348,7 +352,7 @@ A: False negatives (over-permissive) are rare with good training. False positive
 A: No! The classifier only sees the **user's original request**, not external content where payloads hide.
 
 **Q: Does this work with [my framework]?**  
-A: Yes! CapGuard is framework-agnostic. Integrations for LangChain, LlamaIndex coming soon.
+A: Currently supports standalone usage and LangChain. More framework integrations may be added in the future.
 
 ---
 
@@ -364,27 +368,11 @@ Apache 2.0 - See [LICENSE](LICENSE)
 
 ---
 
-## Citation
-
-If you use CapGuard in your research, please cite:
-
-```bibtex
-@article{capguard2026,
-  title={Capability-Based Access Control for Large Language Model Agents},
-  author={TODO},
-  journal={arXiv preprint arXiv:TODO},
-  year={2026}
-}
-```
-
----
-
 ## Contact
 
-- **Website**: [capguard.com](https://capguard.com) (coming soon)
-- **Email**: founders@capguard.com
-- **Twitter**: [@capguard](https://twitter.com/capguard) (coming soon)
 - **GitHub**: [github.com/capguard/capguard](https://github.com/capguard/capguard)
+- **Issues**: [GitHub Issues](https://github.com/capguard/capguard/issues)
+- **Email**: 83171543+Nixbu@users.noreply.github.com
 
 ---
 
